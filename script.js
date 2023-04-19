@@ -168,6 +168,7 @@ function addToCart(e) {
 function removeFromCart(e) {
     e.target.parentNode.remove()
     let fruta = cartList.find(fruta => fruta.id === e.target.id.slice(1))
+    fruta.quantity = 1
     let index = cartList.indexOf(fruta)
     cartList.splice(index, 1)
     saveCart()
