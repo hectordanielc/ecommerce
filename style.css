@@ -4,7 +4,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    align-items: center;
     width: 100%;
 }
 
@@ -15,16 +14,6 @@
     justify-content: center;
     align-items: center;
     width: 70%;
-    height: 100%;
-}
-
-.carrito{
-    border: solid 1px #000;
-    /* display: flex; */
-    /* flex-wrap: wrap; */
-    /* justify-content: center; */
-    /* align-items: center; */
-    width: 25%;
     height: 100%;
 }
 
@@ -45,7 +34,7 @@
     transform: scale(1.1); 
 }
 
-.contenedor .tarjeta .image {
+.contenedor .tarjeta .productImage {
     background-repeat: no-repeat;
     background-size: cover;
     width: 100%;
@@ -56,5 +45,38 @@
     width: 100%;
     border-radius: 0%;
     cursor: pointer;
+    user-select: none;
+}
 
+.cartDiv{
+    border: solid 1px #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 25%;
+    height: 100%;
+}
+
+.cartDiv .cartProduct{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    border-bottom: solid 1px gray;
+}
+
+.cartDiv .cartProduct input{
+    width: 50px;
+    height: 50px;
+    border: solid 1px #000;
+    text-align: center;
+}
+
+.cartDiv .cartImage{
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100px;
+    height: 100px;
 }
