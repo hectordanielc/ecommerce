@@ -192,9 +192,17 @@ function saveCart() {
     localStorage.setItem("cartList", JSON.stringify(cartList))
 }
 
-//FFuncion que modifica la cantidad de un producto en el carrito
+//Fsuncion que modifica la cantidad de un producto en el carrito
 function changeQuantity(e) {
     let fruta = cartList.find(fruta => fruta.id === e.target.id.slice(5))
     fruta.quantity = parseInt(e.target.value)
+
+    if (e.target.value < 1) {
+    e.target.parentNode.parentNode.remove()
+    let fruta = cartList.find(fruta => fruta.id === e.target.id.slice(1))
+    fruta.quantity = 1
+    let index = cartList.indexOf(fruta)
+    cartList.splice(index, 1);
+    }
     saveCart()
 }
