@@ -92,6 +92,9 @@ if (localStorage.getItem("cartList")) {
         cartDiv.appendChild(cartProduct)
         let btn = document.getElementById(`r${fruta.id}`)
         btn.addEventListener("click", removeFromCart)
+
+        let input = document.getElementById(`input${fruta.id}`)
+        input.addEventListener("change", changeQuantity)
         hideCart()
     })
 }
@@ -152,8 +155,6 @@ function addToCart(e) {
             cartDiv.appendChild(cartProduct)
             let btn = document.getElementById(`r${fruta.id}`)
             btn.addEventListener("click", removeFromCart)
-            console.log(cartDiv.children.length)
-            console.log(fruta)  
             saveCart()
             hideCart()
         }
@@ -161,8 +162,6 @@ function addToCart(e) {
 
 //Si fruta.name esta en cartList, suma 1 a la cantidad
 //Si no esta, agrega fruta a cartList
-
-
 
 //Funcion para remover el producto del carrito
 function removeFromCart(e) {
@@ -189,3 +188,9 @@ function saveCart() {
     localStorage.setItem("cartList", JSON.stringify(cartList))
 }
 
+//Function that modify the quantity in cartList when the input is changed
+function changeQuantity(e) {
+    let fruta = cartList.find(fruta => fruta.id === e.target.id.slice(5))
+    fruta.quantity = parseInt(e.target.value)
+    saveCart()
+}
