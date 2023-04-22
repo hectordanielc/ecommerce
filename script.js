@@ -68,7 +68,7 @@ hideCart()
 let fruitsDiv = document.getElementById("frutas")
 renderProducts(products)
 
-//if there is a cart in local storage, load it
+//Si hay un carrito en local storage, cargalo
 if (localStorage.getItem("cartList")) {
     cartList = JSON.parse(localStorage.getItem("cartList"))
     //for each product in cartList, add it to the cart
@@ -117,7 +117,7 @@ function renderProducts(arrayProductos) {
     })
 }
 
-//if there is a cart in local storage, load it
+//Si hay un carrito en local storage, cargalo
 if (localStorage.getItem("cartList")) {
     cartList = JSON.parse(localStorage.getItem("cartList"))
 }
@@ -155,6 +155,10 @@ function addToCart(e) {
             cartDiv.appendChild(cartProduct)
             let btn = document.getElementById(`r${fruta.id}`)
             btn.addEventListener("click", removeFromCart)
+
+            let input = document.getElementById(`input${fruta.id}`)
+            input.addEventListener("change", changeQuantity)
+
             saveCart()
             hideCart()
         }
@@ -174,7 +178,7 @@ function removeFromCart(e) {
     hideCart()
 }   
 
-//Function to hide cart when empty and show when not empty not needed to be called
+//Funcion para ocultar el carrito si esta vacio
 function hideCart() {
     if (cartDiv.children.length == 1) {
         cartDiv.style.display = "none"
@@ -183,12 +187,12 @@ function hideCart() {
     }
 }
 
-//Function that saves the carlist to local storage
+//Funcion para guardar el carrito en local storage
 function saveCart() {
     localStorage.setItem("cartList", JSON.stringify(cartList))
 }
 
-//Function that modify the quantity in cartList when the input is changed
+//FFuncion que modifica la cantidad de un producto en el carrito
 function changeQuantity(e) {
     let fruta = cartList.find(fruta => fruta.id === e.target.id.slice(5))
     fruta.quantity = parseInt(e.target.value)
