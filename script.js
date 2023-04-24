@@ -199,10 +199,10 @@ function changeQuantity(e) {
 
     if (e.target.value < 1) {
     e.target.parentNode.parentNode.remove()
-    let fruta = cartList.find(fruta => fruta.id === e.target.id.slice(1))
-    fruta.quantity = 1
     let index = cartList.indexOf(fruta)
+    fruta.quantity = 1
     cartList.splice(index, 1);
-    }
     saveCart()
+    }
+    
 }
