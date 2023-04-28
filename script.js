@@ -1,106 +1,33 @@
-//Lista de productos
-let products = [
-    { name: "Apple",
-        id: "1",
-        price: 15,
-        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/220px-Red_Apple.jpg",
-        quantity: 1,
-    },
-    { name: "Banana",
-        id: "2",
-        price: 12,
-        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/220px-Banana-Single.jpg",
-        quantity: 1,
-    },
-    { name: "Orange",
-        id: "3",
-        price: 10,
-        img: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Orange%2C_orange_peel.jpg",
-        quantity: 1,
-    },
-    { name: "Pineapple",
-        id: "4",
-        price: 25,
-        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Pineapple_and_cross_section.jpg/220px-Pineapple_and_cross_section.jpg",
-        quantity: 1,
-    },
-    { name: "Strawberry",
-        id: "5",
-        price: 10,
-        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Yours_Food_Logo.jpg/640px-Yours_Food_Logo.jpg",
-        quantity: 1,
-    },
-    { name: "Watermelon",
-        id: "6",
-        price: 12,
-        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Piece_of_watermelon.png/640px-Piece_of_watermelon.png",
-        quantity: 1,
-    },
-    { name: "Mango",
-        id: "7",
-        price: 10,
-        img: "https://upload.wikimedia.org/wikipedia/commons/e/ea/MANGOES.jpg",
-        quantity: 1,    
-    },
-    { name: "Peach",
-        id: "8",
-        price: 7,
-        img: "https://i0.wp.com/grospace.co.za/wp-content/uploads/2021/03/GroSpace-Peach.jpg?fit=1000%2C918&ssl=1",
-        quantity: 1,
-    },
-    { name: "Pear",
-        id: "9",
-        price: 8,
-        img: "https://dictionary.cambridge.org/es/images/thumb/pear_noun_002_26910.jpg?version=5.0.312",
-        quantity: 1,
-    },
-    { name: "Grapes",
-        id: "10",
-        price: 10,
-        img: "https://img.imageboss.me/fourwinds/width/425/dpr:2/s/files/1/2336/3219/products/blackmonukka.jpg?v=1538780984",
-        quantity: 1,
-    }
-];
-let cartList = []
+let prroducts = []
+let cartList = JSON.parse(localStorage.getItem("cartList"))
+
+//Fetch los productos del JSON
+fetch('./products.json')
+    .then(response => response.json())
+    .then(data => {
+        products = data
+        renderProducts(products)
+    })
+    .catch(error => console.log(error))
+
+//Referencia al div del carrito
 let cartDiv = document.getElementById("cart")
 hideCart()
 
+//Referencia al div de los productos
 let fruitsDiv = document.getElementById("frutas")
-renderProducts(products)
 
-//Si hay un carrito en local storage, cargalo
+// Si hay un carrito en local storage, renderizarlo
 if (localStorage.getItem("cartList")) {
-    cartList = JSON.parse(localStorage.getItem("cartList"))
-    //for each product in cartList, add it to the cart
+    // Obtener la lista de productos del carrito
+    let cartList = JSON.parse(localStorage.getItem("cartList"))
+    // Recorrer la lista de productos y agregarlos al carrito
     cartList.forEach(fruta => {
-        // let index = products.indexOf(fruta)
-        // products.splice(index, 1, fruta)
-        let cartProduct = document.createElement("div")
-        cartProduct.classList.add("cartProduct")
-        cartProduct.innerHTML = `
-        <div
-            <p>Price: DOP ${fruta.price}</p>
-            <p>Quantity: </p>
-            <input type="number" id="input${fruta.id}" value="${fruta.quantity}">
-        </div>
-        <div>
-        <p>${fruta.name}</p>
-        <div class="cartImage" style="background-image: url(${fruta.img})"></div>
-        </div>
-        <button class="btn btn-danger" type="button" id="r${fruta.id}">Remove</button>
-        `
-        cartDiv.appendChild(cartProduct)
-        let btn = document.getElementById(`r${fruta.id}`)
-        btn.addEventListener("click", removeFromCart)
-
-        let input = document.getElementById(`input${fruta.id}`)
-        input.addEventListener("change", changeQuantity)
-        hideCart()
+        addProductToCart(fruta)
     })
 }
 
-
-
+//Funcion para mostrar productos del catalogo
 function renderProducts(arrayProductos) {
     arrayProductos.forEach(fruta => {
         let tarjeta = document.createElement("div")
@@ -111,7 +38,7 @@ function renderProducts(arrayProductos) {
         <button class="btn btn-primary" type="button" id="${fruta.id}">Add to cart</button>
         `
         fruitsDiv.appendChild(tarjeta)
-        
+
         let btn = document.getElementById(fruta.id)
         btn.addEventListener("click", addToCart)
     })
@@ -122,50 +49,26 @@ if (localStorage.getItem("cartList")) {
     cartList = JSON.parse(localStorage.getItem("cartList"))
 }
 
-//Funcion para agregar el producto al carrito
+// Funcion para agregar el producto al carrito
 function addToCart(e) {
     let fruta = products.find(fruta => fruta.id === e.target.id)
-    
-
 
     if (cartList.some(item => item.name === fruta.name)) {
-        //suma1 al imput de cantidad
+        // Suma 1 al input de cantidad
         let input = document.getElementById(`input${fruta.id}`)
         input.value = parseInt(input.value) + 1
         fruta.quantity = parseInt(input.value)
-        //Reemplaza fruta en cartList
-        let index = cartList.indexOf(fruta)
+        // Reemplaza fruta en cartList seleccionando el index de la fruta segun name
+        let index = cartList.findIndex(item => item.name === fruta.name)
         cartList.splice(index, 1, fruta)
         saveCart()
-    } else {cartList.push(fruta)
-            let cartProduct = document.createElement("div")
-            cartProduct.classList.add("cartProduct")
-            cartProduct.innerHTML = `
-            <div
-                <p>Price: DOP ${fruta.price}</p>
-                <p>Quantity: </p>
-                <input type="number" id="input${fruta.id}" value="${fruta.quantity}">
-            </div>
-            <div>
-            <p>${fruta.name}</p>
-            <div class="cartImage" style="background-image: url(${fruta.img})"></div>
-            </div>
-            <button class="btn btn-danger" type="button" id="r${fruta.id}">Remove</button>
-            `
-            cartDiv.appendChild(cartProduct)
-            let btn = document.getElementById(`r${fruta.id}`)
-            btn.addEventListener("click", removeFromCart)
-
-            let input = document.getElementById(`input${fruta.id}`)
-            input.addEventListener("change", changeQuantity)
-
-            saveCart()
-            hideCart()
-        }
+        usotoastify(fruta.name)
+    } else {
+        cartList.push(fruta)
+        addProductToCart(fruta)
+        usotoastify(fruta.name)
+    }
 }
-
-//Si fruta.name esta en cartList, suma 1 a la cantidad
-//Si no esta, agrega fruta a cartList
 
 //Funcion para remover el producto del carrito
 function removeFromCart(e) {
@@ -176,7 +79,7 @@ function removeFromCart(e) {
     cartList.splice(index, 1)
     saveCart()
     hideCart()
-}   
+}
 
 //Funcion para ocultar el carrito si esta vacio
 function hideCart() {
@@ -196,13 +99,57 @@ function saveCart() {
 function changeQuantity(e) {
     let fruta = cartList.find(fruta => fruta.id === e.target.id.slice(5))
     fruta.quantity = parseInt(e.target.value)
+    saveCart()
 
     if (e.target.value < 1) {
-    e.target.parentNode.parentNode.remove()
-    let index = cartList.indexOf(fruta)
-    fruta.quantity = 1
-    cartList.splice(index, 1);
-    saveCart()
+        e.target.parentNode.parentNode.remove()
+        let index = cartList.indexOf(fruta)
+        fruta.quantity = 1
+        cartList.splice(index, 1);
+        saveCart()
     }
-    
+}
+
+// Función para crear y agregar un nuevo producto al carrito
+function addProductToCart(fruta) {
+    let cartProduct = document.createElement("div")
+    cartProduct.classList.add("cartProduct")
+    cartProduct.innerHTML = `
+    <div>
+    <p>Price: DOP ${fruta.price}</p>
+    <p>Quantity: </p>
+    <input type="number" id="input${fruta.id}" value="${fruta.quantity}">
+    </div>
+    <div>
+    <p>${fruta.name}</p>
+    <div class="cartImage" style="background-image: url(${fruta.img})"></div>
+    </div>
+    <button class="btn btn-danger" type="button" id="r${fruta.id}">Remove</button>
+    `
+    cartDiv.appendChild(cartProduct)
+    let btn = document.getElementById(`r${fruta.id}`)
+    btn.addEventListener("click", removeFromCart)
+
+    let input = document.getElementById(`input${fruta.id}`)
+    input.addEventListener("change", changeQuantity)
+
+    saveCart()
+    hideCart()
+}
+
+function usotoastify(fruta) {
+    Toastify({
+        text: `Se agregó 1 ${fruta} al carrito`,
+        duration: 3000,
+        destination: "https://github.com/apvarun/toastify-js",
+        newWindow: true,
+        close: false,
+        gravity: "top", // `top` or `bottom`
+        position: "left", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+        },
+        onClick: function () { } // Callback after click
+    }).showToast();
 }
