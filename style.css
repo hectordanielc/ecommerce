@@ -57,6 +57,7 @@
     text-align: center;
     width: 25%;
     height: 100%;
+    display: none;
 }
 
 .cartDiv .cartProduct{
