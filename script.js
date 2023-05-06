@@ -1,5 +1,13 @@
-let prroducts = []
-let cartList = JSON.parse(localStorage.getItem("cartList"))
+let products = []
+let cartList = []
+// Si hay un carrito en local storage, renderizarlo
+if (localStorage.getItem("cartList")) {
+    // Obtener la lista de productos del carrito
+    cartList = JSON.parse(localStorage.getItem("cartList"))
+    // Recorrer la lista de productos y agregarlos al carrito
+} else {
+    cartList = []
+}
 
 //Fetch los productos del JSON
 fetch('./products.json')
@@ -16,11 +24,11 @@ hideCart()
 
 //Referencia al div de los productos
 let fruitsDiv = document.getElementById("frutas")
+let placeOrder = document.getElementById("placeOrder")
+placeOrder.addEventListener("click", orderPlaced)
 
-// Si hay un carrito en local storage, renderizarlo
+// Si hay un carrito renderizarlo
 if (localStorage.getItem("cartList")) {
-    // Obtener la lista de productos del carrito
-    let cartList = JSON.parse(localStorage.getItem("cartList"))
     // Recorrer la lista de productos y agregarlos al carrito
     cartList.forEach(fruta => {
         addProductToCart(fruta)
@@ -83,7 +91,7 @@ function removeFromCart(e) {
 
 //Funcion para ocultar el carrito si esta vacio
 function hideCart() {
-    if (cartDiv.children.length == 1) {
+    if (cartList< 1) {
         cartDiv.style.display = "none"
     } else {
         cartDiv.style.display = "block"
@@ -152,4 +160,21 @@ function usotoastify(fruta) {
         },
         onClick: function () { } // Callback after click
     }).showToast();
+}
+
+//Funcion de orden colocada
+function orderPlaced() {
+    cartList = []
+    saveCart()
+    hideCart()
+    swal({
+        title: "Thank you!",
+        text: "Your order has been placed!",
+        icon: "success",
+        button: true,
+    }).then((result) => {
+        if (result) {
+            location.reload()
+        }
+    })
 }
